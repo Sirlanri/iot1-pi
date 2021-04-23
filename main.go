@@ -1,7 +1,15 @@
 package main
 
-import "github.com/sirlanri/iot1-pi/output"
+import (
+	"sync"
+
+	"github.com/sirlanri/iot1-pi/output"
+)
 
 func main() {
+	wait := sync.WaitGroup{}
+	wait.Add(1)
 	output.LedSwich("on")
+	wait.Wait()
+	return
 }

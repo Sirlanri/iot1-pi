@@ -1,4 +1,4 @@
-package hardware
+package output
 
 import (
 	"fmt"
@@ -11,6 +11,7 @@ import (
 var (
 	Chip *gpiod.Chip //手动控制GPIO
 	//Line *gpiod.Line
+	Instruction string //控制LED的信标
 )
 
 func init() {
@@ -20,37 +21,45 @@ func init() {
 		fmt.Println("GPIO 初始化芯片组失败 ", err.Error())
 		return
 	}
+	Instruction = "off"
 
-}
-
-//Led 操作led： on off blink
-func LedSwich(code string) {
 	line, err := Chip.RequestLine(rpi.GPIO4, gpiod.AsOutput(0))
+
 	if err != nil {
 		fmt.Println("初始化GPIO4出错 ", err.Error())
 		return
 	}
 
-	defer line.Close()
+	go ledControl(line)
 
-	if code == "on" {
-		line.SetValue(0)
-		time.Sleep(time.Second * 2)
-		return
-	}
-	if code == "off" {
-		line.SetValue(1)
-		time.Sleep(time.Second * 2)
-		return
-	}
-	if code == "blink" {
-		for i := 0; i < 5; i++ {
+}
+
+//Led 操作led： on off blink
+func LedSwich(code string) {
+	Instruction = code
+}
+
+//LedControl 控制LED灯的实际函数，应放入一个线程中运行
+func ledControl(line *gpiod.Line) {
+
+	for {
+		if Instruction == "on" {
 			line.SetValue(0)
-			time.Sleep(time.Millisecond * 200)
-			line.SetValue(1)
-			time.Sleep(time.Millisecond * 200)
+			time.Sleep(time.Second * 3)
 		}
-		return
+		if Instruction == "off" {
+			line.SetValue(1)
+			time.Sleep(time.Second * 3)
+		}
+		if Instruction == "blink" {
+			for i := 0; i < 5; i++ {
+				line.SetValue(0)
+				time.Sleep(time.Millisecond * 200)
+				line.SetValue(1)
+				time.Sleep(time.Millisecond * 200)
+			}
+		}
+		fmt.Println("正在执行控制 ", Instruction)
 	}
 
 }
