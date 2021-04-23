@@ -1,8 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/sirlanri/iot1-pi/output"
 
 func main() {
-	fmt.Println("hello!")
-	return
+	output.LedSwich("on")
 }
