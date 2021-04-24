@@ -33,7 +33,7 @@ func sendToServer(temp, humi float64) {
 	params.Set("humi", strconv.FormatFloat(humi, 'f', 2, 32))
 	params.Set("temp", strconv.FormatFloat(temp, 'f', 2, 32))
 	urlPath := serverUrl.String() + params.Encode()
-	fmt.Println("url:", urlPath)
+	//fmt.Println("url:", urlPath)
 
 	res, err := http.Post(urlPath, "", nil)
 	if err != nil {

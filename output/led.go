@@ -31,7 +31,7 @@ func init() {
 	}
 
 	go ledControl(line)
-
+	//line.Close()
 }
 
 //Led 操作led： on off blink
@@ -41,15 +41,14 @@ func LedSwich(code string) {
 
 //LedControl 控制LED灯的实际函数，应放入一个线程中运行
 func ledControl(line *gpiod.Line) {
-
 	for {
 		if Instruction == "on" {
 			line.SetValue(0)
-			time.Sleep(time.Second * 3)
+			time.Sleep(time.Second)
 		}
 		if Instruction == "off" {
 			line.SetValue(1)
-			time.Sleep(time.Second * 3)
+			time.Sleep(time.Second)
 		}
 		if Instruction == "blink" {
 			for i := 0; i < 5; i++ {
@@ -59,7 +58,7 @@ func ledControl(line *gpiod.Line) {
 				time.Sleep(time.Millisecond * 200)
 			}
 		}
-		fmt.Println("正在执行控制 ", Instruction)
+		//fmt.Println("正在执行控制 ", Instruction)
 	}
 
 }
