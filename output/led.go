@@ -45,7 +45,7 @@ func ledControl(line *gpiod.Line) {
 	for {
 		if Instruction == "on" {
 			line.SetValue(0)
-			//time.Sleep(time.Second)
+			time.Sleep(time.Second)
 		}
 		if Instruction == "off" {
 			line.SetValue(1)

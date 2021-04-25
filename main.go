@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/sirlanri/iot1-pi/output"
+	"github.com/sirlanri/iot1-pi/server"
 	_ "github.com/sirlanri/iot1-pi/server"
 )
 
@@ -13,6 +14,7 @@ func main() {
 
 	//sensor.SendHT()
 	output.LedSwich("on")
+	server.IrisInit()
 	//阻塞
 	wait.Wait()
 	return
