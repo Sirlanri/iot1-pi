@@ -1,10 +1,9 @@
 package output
 
 import (
-	"fmt"
 	"time"
 
-	"github.com/sirlanri/iot1-pi/config"
+	"github.com/sirlanri/iot1-pi/log"
 	"github.com/warthog618/gpiod"
 	"github.com/warthog618/gpiod/device/rpi"
 )
@@ -19,7 +18,7 @@ func init() {
 	var err error
 	Chip, err = gpiod.NewChip("gpiochip0")
 	if err != nil {
-		fmt.Println("GPIO 初始化芯片组失败 ", err.Error())
+		log.Log.Errorln("GPIO 初始化芯片组失败 ", err.Error())
 		return
 	}
 	Instruction = "off"
@@ -27,7 +26,7 @@ func init() {
 	line, err := Chip.RequestLine(rpi.GPIO4, gpiod.AsOutput(0))
 
 	if err != nil {
-		fmt.Println("初始化GPIO4出错 ", err.Error())
+		log.Log.Errorln("初始化GPIO4出错 ", err.Error())
 		return
 	}
 
@@ -38,8 +37,6 @@ func init() {
 
 //Led 操作led： on off blink
 func LedSwich(code string) {
-	config.Log.Debugln("测试级别")
-	config.Log.Warnln("警告级别")
 	Instruction = code
 }
 
@@ -63,7 +60,7 @@ func ledControl(line *gpiod.Line) {
 			}
 		}
 
-		//fmt.Println("正在执行控制 ", Instruction)
+		//log.Log.Errorln("正在执行控制 ", Instruction)
 	}
 
 }
