@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/sirlanri/iot1-pi/config"
 	"github.com/warthog618/gpiod"
 	"github.com/warthog618/gpiod/device/rpi"
 )
@@ -31,11 +32,14 @@ func init() {
 	}
 
 	go ledControl(line)
+
 	//line.Close()
 }
 
 //Led 操作led： on off blink
 func LedSwich(code string) {
+	config.Log.Debugln("测试级别")
+	config.Log.Warnln("警告级别")
 	Instruction = code
 }
 
@@ -44,7 +48,7 @@ func ledControl(line *gpiod.Line) {
 	for {
 		if Instruction == "on" {
 			line.SetValue(0)
-			time.Sleep(time.Second)
+			//time.Sleep(time.Second)
 		}
 		if Instruction == "off" {
 			line.SetValue(1)
@@ -58,6 +62,7 @@ func ledControl(line *gpiod.Line) {
 				time.Sleep(time.Millisecond * 200)
 			}
 		}
+
 		//fmt.Println("正在执行控制 ", Instruction)
 	}
 
