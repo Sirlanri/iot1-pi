@@ -41,7 +41,7 @@ func HumiTempAli(humi, temp string) {
 
 	res, err := http.Get(urlPath)
 	if err != nil {
-		log.Log.Errorln("向阿里云发送get请求失败 ", err.Error())
+		log.Log.Warnln("向云端发送get请求失败 ", err.Error())
 		return
 	}
 	defer res.Body.Close()
