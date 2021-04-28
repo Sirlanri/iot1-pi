@@ -23,7 +23,8 @@ func HumiTempEsp(con iris.Context) {
 	humi := con.URLParam("humi")
 	temp := con.URLParam("temp")
 	log.Log.Debugf("接收到Esp传入 温度：%s,潮湿度%s", temp, humi)
-	HumiTempAli(humi, temp)
+
+	go HumiTempAli(humi, temp)
 }
 
 //HumiTempAli 将温湿度数据上传到阿里云
