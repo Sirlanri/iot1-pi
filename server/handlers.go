@@ -18,13 +18,20 @@ func NotFound(ctx iris.Context) {
 	ctx.WriteString("路由/请求地址错误")
 }
 
-//HumiTempEsp -handler 从esp接收温湿度数据
-func HumiTempEsp(con iris.Context) {
+//ResEsp -handler 从esp接收温湿度数据
+func ResEsp(con iris.Context) {
 	humi := con.URLParam("humi")
 	temp := con.URLParam("temp")
-	log.Log.Debugf("接收到Esp传入 温度：%s,潮湿度%s", temp, humi)
+	light := con.URLParam("light")
+	rain := con.URLParam("rain")
+	water := con.URLParam("water")
+	raininc := con.URLParam("rainincrease")
+	log.Log.Debugf("接收到Esp传入 温度：%s,潮湿度%s，光强度%s，下雨%s,水量%s,雨增量%s",
+		temp, humi, light, rain, water, raininc)
 
-	go HumiTempAli(humi, temp)
+	//go HumiTempAli(humi, temp)
+
+	con.WriteString("pi4B: data confirmed")
 }
 
 //HumiTempAli 将温湿度数据上传到阿里云

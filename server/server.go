@@ -15,7 +15,7 @@ func IrisInit() {
 	esp := app.Party("/esp", crs).AllowMethods(iris.MethodOptions)
 
 	//传感器传入数据
-	esp.Get("/sendHumiTemp", HumiTempEsp)
+	esp.Get("/sendTopi", ResEsp)
 
 	app.Run(iris.Addr(":8091"))
 }
