@@ -1,7 +1,7 @@
 package server
 
 import (
-	"fmt"
+	"bytes"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -13,7 +13,7 @@ import (
 
 //NotFound -handler 前端请求地址错误，调用此handler处理
 func NotFound(ctx iris.Context) {
-	fmt.Println("404-找不到此路由/路径:", ctx.RequestPath(true))
+	log.Log.Warn("404-找不到此路由/路径:", ctx.FullRequestURI())
 	ctx.StatusCode(404)
 	ctx.WriteString("路由/请求地址错误")
 }
@@ -30,6 +30,7 @@ func ResEsp(con iris.Context) {
 		temp, humi, light, rain, water, raininc)
 
 	//go HumiTempAli(humi, temp)
+	go PostAliTemps()
 
 	con.WriteString("pi4B: data confirmed")
 }
@@ -55,4 +56,25 @@ func HumiTempAli(humi, temp string) {
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 	log.Log.Debugln("请求完成", string(body))
+}
+
+//上传温湿json到server
+func PostAliTemps() {
+	server := config.BaseurlConf() + "/temps"
+	postData := `
+	{
+		"temp1":"20.21",
+		"temp2":"20.21",
+		"temp3":"20.21"
+	}
+	`
+	var data = []byte(postData)
+	resq, err := http.Post(server, "application/json", bytes.NewBuffer(data))
+	if err != nil {
+		log.Log.Warn("发送温度至服务器失败", err.Error())
+		return
+	}
+	defer resq.Body.Close()
+	body, _ := ioutil.ReadAll(resq.Body)
+	log.Log.Debug(string(body))
 }
