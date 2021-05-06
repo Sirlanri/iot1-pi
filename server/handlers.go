@@ -47,7 +47,6 @@ func HumiTempAli(humi, temp string) {
 	params.Set("humi", humi)
 	params.Set("temp", temp)
 	urlPath := serverUrl.String() + params.Encode()
-	//log.Log.Errorln("url:", urlPath)
 
 	res, err := http.Get(urlPath)
 	if err != nil {
