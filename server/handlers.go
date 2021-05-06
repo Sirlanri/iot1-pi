@@ -21,17 +21,42 @@ func NotFound(ctx iris.Context) {
 
 //ResEsp -handler 从esp接收温湿度数据
 func ResEsp(con iris.Context) {
+	name := con.URLParam("name")
+	if name == "" {
+		con.WriteString("非法设备")
+		return
+	}
+
+	//处理温湿度
 	humi := con.URLParam("humi")
 	temp := con.URLParam("temp")
+	switch name {
+	case "esp1":
+		Temp1 = temp
+		Humi1 = humi
+	case "esp2":
+		Temp2 = temp
+		Humi3 = humi
+	case "esp3":
+		Temp3 = temp
+		Humi3 = humi
+	}
+
 	light := con.URLParam("light")
+	if light != "" {
+		LightAli(light)
+	}
+
 	rain := con.URLParam("rain")
 	water := con.URLParam("water")
 	raininc := con.URLParam("rainincrease")
 	log.Log.Debugf("接收到Esp传入 温度：%s,潮湿度%s，光强度%s，下雨%s,水量%s,雨增量%s",
 		temp, humi, light, rain, water, raininc)
 
-	//go HumiTempAli(humi, temp)
-	go PostAliTemps()
+	go func() {
+		HumisAli()
+		TempsAli()
+	}()
 
 	con.WriteString("pi4B: data confirmed")
 }
@@ -96,6 +121,22 @@ func HumisAli() {
 	defer resq.Body.Close()
 	body, _ := ioutil.ReadAll(resq.Body)
 	log.Log.Debug("发送潮湿至服务器完成 ", string(body))
+}
+
+//-handler 上传光照至服务器
+func LightAli(light string) {
+	server := config.BaseurlConf() + "/light?"
+	params := url.Values{}
+	params.Set("light", light)
+	urlPath := server + params.Encode()
+	res, err := http.Get(urlPath)
+	if err != nil {
+		log.Log.Warnln("向云端发送光照请求失败 ", err.Error())
+		return
+	}
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+	log.Log.Debugln("请求完成", string(body))
 }
 
 //HumiTempAli 将温湿度数据上传到阿里云
