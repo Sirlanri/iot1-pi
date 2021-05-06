@@ -36,6 +36,68 @@ func ResEsp(con iris.Context) {
 	con.WriteString("pi4B: data confirmed")
 }
 
+//-handler 将温度*3发送至云服务器
+func TempsAli() {
+	temp1 := Temp1
+	var temp2, temp3 string
+
+	//判断数据是否空
+	if Temp2 == "" {
+		temp2 = "0"
+	}
+	if Temp3 == "" {
+		temp3 = "0"
+	}
+
+	postData := map[string]interface{}{
+		"temp1": temp1,
+		"temp2": temp2,
+		"temp3": temp3,
+	}
+
+	byteData, _ := json.Marshal(postData)
+	server := config.BaseurlConf() + "/temps"
+	resq, err := http.Post(server, "application/json", bytes.NewBuffer(byteData))
+	if err != nil {
+		log.Log.Warn("发送温度至服务器失败", err.Error())
+		return
+	}
+	defer resq.Body.Close()
+	body, _ := ioutil.ReadAll(resq.Body)
+	log.Log.Debug("发送温度至阿里云完成 ", string(body))
+}
+
+//-handler 将潮湿度*3发送至云服务器
+func HumisAli() {
+	humi1 := Temp1
+	var humi2, humi3 string
+
+	//判断数据是否空
+	if Temp2 == "" {
+		humi2 = "0"
+	}
+	if Temp3 == "" {
+		humi3 = "0"
+	}
+
+	postData := map[string]interface{}{
+		"humi1": humi1,
+		"humi2": humi2,
+		"humi3": humi3,
+	}
+
+	byteData, _ := json.Marshal(postData)
+	server := config.BaseurlConf() + "/humis"
+	resq, err := http.Post(server, "application/json", bytes.NewBuffer(byteData))
+	if err != nil {
+		log.Log.Warn("发送潮湿度至服务器失败", err.Error())
+		return
+	}
+	defer resq.Body.Close()
+	body, _ := ioutil.ReadAll(resq.Body)
+	log.Log.Debug("发送潮湿至服务器完成 ", string(body))
+}
+
 //HumiTempAli 将温湿度数据上传到阿里云
 func HumiTempAli(humi, temp string) {
 	params := url.Values{}
