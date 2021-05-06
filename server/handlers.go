@@ -37,9 +37,11 @@ func ResEsp(con iris.Context) {
 	case "esp2":
 		Temp2 = temp
 		Humi3 = humi
+		return
 	case "esp3":
 		Temp3 = temp
 		Humi3 = humi
+		return
 	}
 
 	light := con.URLParam("light")
