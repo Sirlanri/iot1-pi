@@ -2,6 +2,7 @@ package server
 
 import (
 	"bytes"
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -61,15 +62,16 @@ func HumiTempAli(humi, temp string) {
 //上传温湿json到server
 func PostAliTemps() {
 	server := config.BaseurlConf() + "/temps"
-	postData := `
-	{
-		"temp1":"20.21",
-		"temp2":"20.21",
-		"temp3":"20.21"
+	postData := make(map[string]interface{})
+	postData["temp1"] = "12.23"
+	postData["temp2"] = "12.24"
+	postData["temp3"] = "12.25"
+	byteData, err := json.Marshal(postData)
+	if err != nil {
+		log.Log.Warn("post温度至服务器 json化数据失败", err.Error())
+		return
 	}
-	`
-	var data = []byte(postData)
-	resq, err := http.Post(server, "application/json", bytes.NewBuffer(data))
+	resq, err := http.Post(server, "application/json", bytes.NewBuffer(byteData))
 	if err != nil {
 		log.Log.Warn("发送温度至服务器失败", err.Error())
 		return
