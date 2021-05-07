@@ -40,7 +40,7 @@ func ResEsp(con iris.Context) {
 		}()
 	case "esp2":
 		Temp2 = temp
-		Humi3 = humi
+		Humi2 = humi
 		return
 	case "esp3":
 		Temp3 = temp
@@ -77,9 +77,13 @@ func TempsAli() {
 	//判断数据是否空
 	if Temp2 == "" {
 		temp2 = "0"
+	} else {
+		temp2 = Temp2
 	}
 	if Temp3 == "" {
 		temp3 = "0"
+	} else {
+		temp3 = Temp3
 	}
 
 	postData := map[string]interface{}{
@@ -106,11 +110,15 @@ func HumisAli() {
 	var humi2, humi3 string
 
 	//判断数据是否空
-	if Temp2 == "" {
+	if Humi2 == "" {
 		humi2 = "0"
+	} else {
+		humi2 = Humi2
 	}
-	if Temp3 == "" {
+	if Humi3 == "" {
 		humi3 = "0"
+	} else {
+		humi3 = Humi3
 	}
 
 	postData := map[string]interface{}{
@@ -144,7 +152,7 @@ func LightAli(light string) {
 	}
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
-	log.Log.Debugln("请求完成", string(body))
+	log.Log.Debugln("light请求完成", string(body))
 }
 
 //-handler 将雨量上传服务器
@@ -161,7 +169,7 @@ func RainAli(rain, inc string) {
 
 	res, err := http.Get(urlPath)
 	if err != nil {
-		log.Log.Warnln("向云端发送get请求失败 ", err.Error())
+		log.Log.Warnln("向云端发送rain失败 ", err.Error())
 		return
 	}
 	defer res.Body.Close()
@@ -182,7 +190,7 @@ func WaterAli(water string) {
 
 	res, err := http.Get(urlPath)
 	if err != nil {
-		log.Log.Warnln("向云端发送get请求失败 ", err.Error())
+		log.Log.Warnln("向云端发送water失败 ", err.Error())
 		return
 	}
 	defer res.Body.Close()
