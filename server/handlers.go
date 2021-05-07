@@ -34,6 +34,9 @@ func ResEsp(con iris.Context) {
 	case "esp1":
 		Temp1 = temp
 		Humi1 = humi
+		if humi == "" {
+			break
+		}
 		go func() {
 			HumisAli()
 			TempsAli()
@@ -41,11 +44,11 @@ func ResEsp(con iris.Context) {
 	case "esp2":
 		Temp2 = temp
 		Humi2 = humi
-		return
+
 	case "esp3":
 		Temp3 = temp
 		Humi3 = humi
-		return
+
 	}
 
 	light := con.URLParam("light")
@@ -63,8 +66,8 @@ func ResEsp(con iris.Context) {
 	if water != "" {
 		go WaterAli(water)
 	}
-	log.Log.Debugf("接收到Esp传入 温度：%s,潮湿度%s，光强度%s，下雨%s,水量%s,雨增量%s",
-		temp, humi, light, rain, water, raininc)
+	log.Log.Debugf("接收到%s传入 温度：%s,潮湿度%s，光强度%s，下雨%s,水量%s,雨增量%s",
+		name, temp, humi, light, rain, water, raininc)
 
 	con.WriteString("pi4B: data confirmed")
 }
