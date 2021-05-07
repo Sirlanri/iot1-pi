@@ -34,6 +34,10 @@ func ResEsp(con iris.Context) {
 	case "esp1":
 		Temp1 = temp
 		Humi1 = humi
+		go func() {
+			HumisAli()
+			TempsAli()
+		}()
 	case "esp2":
 		Temp2 = temp
 		Humi3 = humi
@@ -50,15 +54,14 @@ func ResEsp(con iris.Context) {
 	}
 
 	rain := con.URLParam("rain")
-	water := con.URLParam("water")
 	raininc := con.URLParam("rainincrease")
+	if rain != "" {
+		go RainAli(rain, raininc)
+	}
+
+	water := con.URLParam("water")
 	log.Log.Debugf("接收到Esp传入 温度：%s,潮湿度%s，光强度%s，下雨%s,水量%s,雨增量%s",
 		temp, humi, light, rain, water, raininc)
-
-	go func() {
-		HumisAli()
-		TempsAli()
-	}()
 
 	con.WriteString("pi4B: data confirmed")
 }
@@ -139,6 +142,28 @@ func LightAli(light string) {
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 	log.Log.Debugln("请求完成", string(body))
+}
+
+//-handler 将雨量上传服务器
+func RainAli(rain, inc string) {
+	params := url.Values{}
+	serverUrl, err := url.Parse(config.BaseurlConf() + "/rain?")
+	if err != nil {
+		log.Log.Warn("上传rain初始化失败 ", err.Error())
+		return
+	}
+	params.Set("rain", rain)
+	params.Set("inc", inc)
+	urlPath := serverUrl.String() + params.Encode()
+
+	res, err := http.Get(urlPath)
+	if err != nil {
+		log.Log.Warnln("向云端发送get请求失败 ", err.Error())
+		return
+	}
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+	log.Log.Debugln("发送雨量请求完成", string(body))
 }
 
 //HumiTempAli 将温湿度数据上传到阿里云
