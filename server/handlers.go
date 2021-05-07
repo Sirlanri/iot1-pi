@@ -32,11 +32,11 @@ func ResEsp(con iris.Context) {
 	temp := con.URLParam("temp")
 	switch name {
 	case "esp1":
-		Temp1 = temp
-		Humi1 = humi
 		if humi == "" {
 			break
 		}
+		Temp1 = temp
+		Humi1 = humi
 		go func() {
 			HumisAli()
 			TempsAli()
