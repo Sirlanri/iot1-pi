@@ -172,7 +172,7 @@ func RainAli(rain, inc string) {
 //-handler 将水量上传服务器
 func WaterAli(water string) {
 	params := url.Values{}
-	serverUrl, err := url.Parse(config.BaseurlConf() + "/rain?")
+	serverUrl, err := url.Parse(config.BaseurlConf() + "/water?")
 	if err != nil {
 		log.Log.Warn("上传water初始化失败 ", err.Error())
 		return
