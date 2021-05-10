@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/sirlanri/iot1-pi/output"
 	"github.com/sirlanri/iot1-pi/server"
-	_ "github.com/sirlanri/iot1-pi/server"
 )
 
 func main() {

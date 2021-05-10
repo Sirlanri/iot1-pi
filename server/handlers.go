@@ -109,7 +109,7 @@ func TempsAli() {
 
 //-handler 将潮湿度*3发送至云服务器
 func HumisAli() {
-	humi1 := Temp1
+	humi1 := Humi1
 	var humi2, humi3 string
 
 	//判断数据是否空
