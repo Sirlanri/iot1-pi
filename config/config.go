@@ -1,6 +1,6 @@
 package config
 
-var Dev = true
+var Dev = false
 
 func BaseurlConf() string {
 	if Dev {
